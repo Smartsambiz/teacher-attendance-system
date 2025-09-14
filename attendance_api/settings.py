@@ -153,10 +153,14 @@ REST_FRAMEWORK ={
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:19006",
     "http://127.0.0.1:19006",
+    "https://teacher-attendance-backend-61uq.onrender.com",
+    "exp://*.exp.host",
+    "exp://*.expo.dev",
 ]
 
 # Required for session authentication from react native
 CORS_ALLOWED_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
 # Needed for the admin to work correctly with CORS
 CSRF_TRUSTED_ORIGINS = [
@@ -168,38 +172,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 
-import dj_database_url
-import os
-
-# Database configuration for production
-if 'DATABASE_URL' in os.environ:
-    DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True,
-        )
-    }
-
-# Static files configuration for production
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Security settings for production
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
-ALLOWED_HOSTS = ['*']  # Railway will provide the domain
-
-# CORS settings for production
-CORS_ALLOWED_ORIGINS = [
-    "https://your-app-name.railway.app",
-    "exp://your-app.exp.host",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://your-app-name.railway.app",
-]
+# Production settings for Render.com]
 
 
 # In your settings.py, use this pattern:
@@ -211,3 +184,25 @@ if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'localhost', '127.0.0.1']
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Development only
+
+
+
+
+
+# Production session settings for Render
+SESSION_COOKIE_SECURE = True  # Only send cookies over HTTPS
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to cookies
+SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'None' if you have CORS issues
+SESSION_COOKIE_DOMAIN = '.onrender.com'  # Allow cookies for all Render subdomains
+
+# CSRF settings for production
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_TRUSTED_ORIGINS = [
+    "https://teacher-attendance-backend-61uq.onrender.com",
+    "https://*.onrender.com",
+]
+
+# If you're still having issues, try these additional settings:
+#CSRF_USE_SESSIONS = True
+#CSRF_COOKIE_SAMESITE = 'Lax'
