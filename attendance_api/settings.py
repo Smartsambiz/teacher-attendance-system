@@ -172,7 +172,38 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 
-# Production settings for Render.com]
+import dj_database_url
+import os
+
+# Database configuration for production
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        )
+    }
+
+# Static files configuration for production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Security settings for production
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+ALLOWED_HOSTS = ['*']  # Railway will provide the domain
+
+# CORS settings for production
+CORS_ALLOWED_ORIGINS = [
+    "https://your-app-name.railway.app",
+    "exp://your-app.exp.host",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://your-app-name.railway.app",
+]
 
 
 # In your settings.py, use this pattern:
