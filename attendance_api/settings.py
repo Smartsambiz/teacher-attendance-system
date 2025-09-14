@@ -162,6 +162,7 @@ CORS_ALLOWED_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:19006",
     "http://127.0.0.1:19006",
+    "https://teacher-attendance-backend-61uq.onrender.com",
 ]
 
 
@@ -169,9 +170,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 import dj_database_url
 import os
-
-# Detect Railway environment
-ON_RAILWAY = 'RAILWAY_STATIC_URL' in os.environ or 'RAILWAY_ENVIRONMENT' in os.environ
 
 # Database configuration for production
 if 'DATABASE_URL' in os.environ:
@@ -189,15 +187,27 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Security settings for production
-if ON_RAILWAY:
-    DEBUG = False
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
-    ALLOWED_HOSTS = ['*']
-    # CORS settings for production
-    CORS_ALLOWED_ORIGINS = [
-        "https://your-app-name.railway.app",
-        "exp://your-app.exp.host",
-    ]
-    CSRF_TRUSTED_ORIGINS = [
-        "https://your-app-name.railway.app",
-    ]
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+ALLOWED_HOSTS = ['*']  # Railway will provide the domain
+
+# CORS settings for production
+CORS_ALLOWED_ORIGINS = [
+    "https://your-app-name.railway.app",
+    "exp://your-app.exp.host",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://your-app-name.railway.app",
+]
+
+
+# In your settings.py, use this pattern:
+import os
+
+# Get the Render URL from environment variable, or use wildcard for development
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'localhost', '127.0.0.1']
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Development only
