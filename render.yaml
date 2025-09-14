@@ -3,8 +3,11 @@ services:
     name: teacher-attendance-backend
     env: python
     plan: free
-    buildCommands: "./build.sh"
-    startCommand: "gunicorn teacher_attendance_system.wsgi:application"
+    buildCommands: |-
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: "gunicorn attendance_api.wsgi:application"
     envVars:
       - key: DEBUG
         value: "False"
