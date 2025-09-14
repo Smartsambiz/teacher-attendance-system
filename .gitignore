@@ -1,0 +1,38 @@
+# Django
+*.pyc
+*__pycache__/
+db.sqlite3
+.env
+.env.local
+
+# Node.js/React Native
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.expo/
+dist/
+.build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Logs
+logs/
+*.log
